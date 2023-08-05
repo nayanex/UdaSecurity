@@ -10,8 +10,8 @@
 
   <artifactId>image</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <groupId>com.udacity.catpoint.image.service</groupId>
+<!--  <version>1.0-SNAPSHOT</version>-->
+<!--  <groupId>com.udacity.catpoint.image.service</groupId>-->
 
   <name>image</name>
   <description>Image Module</description>

@@ -8,5 +8,4 @@ module security {
     requires image;
 
     opens com.udacity.catpoint.security.data to com.google.gson;
-
 }

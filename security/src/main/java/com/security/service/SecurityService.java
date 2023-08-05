@@ -5,7 +5,7 @@ import com.security.data.AlarmStatus;
 import com.security.data.ArmingStatus;
 import com.security.data.SecurityRepository;
 import com.security.data.Sensor;
-import com.udacity.catpoint.image.service.FakeImageService;
+import com.udacity.catpoint.image.service.ImageService;
 
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
@@ -19,12 +19,11 @@ import java.util.Set;
  * class you will be writing unit tests for.
  */
 public class SecurityService {
-
-    private FakeImageService imageService;
+    private ImageService imageService;
     private SecurityRepository securityRepository;
     private Set<StatusListener> statusListeners = new HashSet<>();
 
-    public SecurityService(SecurityRepository securityRepository, FakeImageService imageService) {
+    public SecurityService(SecurityRepository securityRepository, ImageService imageService) {
         this.securityRepository = securityRepository;
         this.imageService = imageService;
     }
