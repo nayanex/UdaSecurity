@@ -17,8 +17,8 @@
   <description>Security Module</description>
 
   <properties>
-    <maven.compiler.source>16</maven.compiler.source>
-    <maven.compiler.target>16</maven.compiler.target>
+    <maven.compiler.source>14</maven.compiler.source>
+    <maven.compiler.target>14</maven.compiler.target>
     <maven.assembly.plugin.version>3.3.0</maven.assembly.plugin.version>
     <dep.version>1.0-SNAPSHOT</dep.version>
   </properties>

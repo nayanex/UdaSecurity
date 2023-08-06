@@ -141,3 +141,8 @@ You can submit your project by uploading a zip file or selecting your GitHub rep
 `mvn clean install -U`
 `mvn install site -e`
 `mvn install site -X`
+`mvn install site`
+`mvn -e clean install site`
+`mvn help:effective-pom`
+`mvn compile`
+`mvn -e spotbugs:check`
