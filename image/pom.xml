@@ -10,11 +10,14 @@
 
   <artifactId>image</artifactId>
   <packaging>jar</packaging>
-<!--  <version>1.0-SNAPSHOT</version>-->
-<!--  <groupId>com.udacity.catpoint.image.service</groupId>-->
 
   <name>image</name>
   <description>Image Module</description>
+
+  <properties>
+    <maven.compiler.source>16</maven.compiler.source>
+    <maven.compiler.target>16</maven.compiler.target>
+  </properties>
 
   <dependencies>
     <!-- AWS SDK for Rekognition -->
@@ -32,11 +35,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
       <version>1.7.30</version>
     </dependency>
   </dependencies>

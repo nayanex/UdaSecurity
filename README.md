@@ -136,4 +136,8 @@ Make sure you have completed all the rubric items [here](https://review.udacity.
 
 You can submit your project by uploading a zip file or selecting your GitHub repo.
 
+## Maven commands
 
+`mvn clean install -U`
+`mvn install site -e`
+`mvn install site -X`

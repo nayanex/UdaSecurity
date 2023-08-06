@@ -14,7 +14,6 @@ import java.util.Set;
 /**
  * Service that receives information about changes to the security system. Responsible for
  * forwarding updates to the repository and making any decisions about changing the system state.
- *
  * This is the class that should contain most of the business logic for our system, and it is the
  * class you will be writing unit tests for.
  */
