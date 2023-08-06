@@ -140,6 +140,7 @@ class SecurityServiceTest {
         verify(securityRepository).removeSensor(sensor);
     }
 
+
     /**
      * Test for verifying processImage calls imageService with the correct parameters.
      */
@@ -211,6 +212,40 @@ class SecurityServiceTest {
         verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 
+    /**
+     * Test for verifying alarm status is set to NO_ALARM when the system is not armed-home and the image does not contain a cat.
+     */
+    @Test
+    void testProcessImageWhenNotArmedHomeAndNoCatDetected() {
+        // Given
+        BufferedImage image = mock(BufferedImage.class);
+        when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.DISARMED);
+        when(imageService.imageContainsCat(any(), anyFloat())).thenReturn(false);
+
+        // When
+        securityService.processImage(image);
+
+        // Then
+        verify(securityRepository).setAlarmStatus(AlarmStatus.NO_ALARM);
+    }
+
+    /**
+     * Test for verifying processImage sets the alarm status to NO_ALARM when the system is armed-home and the camera does not show a cat.
+     */
+    @Test
+    void testProcessImageWhenArmedHomeAndNoCatDetected() {
+        // Given
+        BufferedImage image = mock(BufferedImage.class);
+        when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
+        when(imageService.imageContainsCat(any(), anyFloat())).thenReturn(false);
+
+        // When
+        securityService.processImage(image);
+
+        // Then
+        verify(securityRepository).setAlarmStatus(AlarmStatus.NO_ALARM);
+    }
+
 
     // --------------------- Parameterized Tests for setArmingStatus method ---------------------
 
@@ -250,6 +285,66 @@ class SecurityServiceTest {
         // Then
         verify(securityRepository, never()).setAlarmStatus(any(AlarmStatus.class));
     }
+
+    // 10. Test for verifying all sensors are reset to inactive when the system is armed
+    @Test
+    void testResetSensorsToInactiveWhenArmed() {
+        // Given
+        Sensor sensor1 = new Sensor("Sensor1", SensorType.DOOR);
+        Sensor sensor2 = new Sensor("Sensor2", SensorType.WINDOW);
+        Set<Sensor> sensors = new HashSet<>();
+        sensors.add(sensor1);
+        sensors.add(sensor2);
+
+        when(securityRepository.getSensors()).thenReturn(sensors);
+        when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
+
+        // Set both sensors to active
+        sensor1.setActive(true);
+        sensor2.setActive(true);
+
+        // When
+        securityService.setArmingStatus(ArmingStatus.ARMED_HOME);
+
+        // Then
+        assertFalse(sensor1.getActive(), "Sensor1 should be reset to inactive");
+        assertFalse(sensor2.getActive(), "Sensor2 should be reset to inactive");
+    }
+
+    // Test for verifying sensor state changes do not affect the alarm status when the alarm is active
+    @Test
+    void testSensorStateChangesDoNotAffectAlarmStatusWhenAlarmActive() {
+        // Given
+        Sensor sensor1 = new Sensor("Sensor1", SensorType.DOOR);
+        Sensor sensor2 = new Sensor("Sensor2", SensorType.WINDOW);
+        Set<Sensor> sensors = new HashSet<>();
+        sensors.add(sensor1);
+        sensors.add(sensor2);
+
+        when(securityRepository.getSensors()).thenReturn(sensors);
+        when(securityRepository.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME);
+
+        // Set both sensors to active
+        sensor1.setActive(true);
+        sensor2.setActive(true);
+
+        // Activate the first sensor, alarm should go to PENDING_ALARM
+        securityService.changeSensorActivationStatus(sensor1, true);
+
+        // Activate the second sensor, alarm should go to ALARM
+        securityService.changeSensorActivationStatus(sensor2, true);
+
+        // Set both sensors to inactive, it should not affect the alarm status
+        securityService.changeSensorActivationStatus(sensor1, false);
+        securityService.changeSensorActivationStatus(sensor2, false);
+
+        // When
+        AlarmStatus alarmStatusAfterSensorChanges = securityService.getAlarmStatus();
+
+        // Then
+        assertEquals(AlarmStatus.ALARM, alarmStatusAfterSensorChanges, "Alarm status should remain ALARM after sensor changes");
+    }
+
 
     // --------------------- Parameterized Tests for sensor activation scenarios ---------------------
 
