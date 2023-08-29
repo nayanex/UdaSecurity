@@ -138,7 +138,7 @@ You can submit your project by uploading a zip file or selecting your GitHub rep
 
 ## Maven commands
 
-`mvn clean install -U`
+`mvn -e clean install -U`
 `mvn install site -e`
 `mvn install site -X`
 `mvn install site`
@@ -146,3 +146,5 @@ You can submit your project by uploading a zip file or selecting your GitHub rep
 `mvn help:effective-pom`
 `mvn compile`
 `mvn -e spotbugs:check`
+`rm -rf ~/.m2/repository
+`

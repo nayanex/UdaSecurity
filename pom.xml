@@ -13,8 +13,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>14</maven.compiler.source>
-    <maven.compiler.target>14</maven.compiler.target>
+    <maven.compiler.source>20</maven.compiler.source>
+    <maven.compiler.target>20</maven.compiler.target>
   </properties>
 
   <modules>
@@ -50,12 +50,15 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
+          <version>3.1.2</version>
           <configuration>
+            <forkCount>0</forkCount>
+            <forkedProcessExitTimeoutInSeconds>300</forkedProcessExitTimeoutInSeconds>
+            <reuseForks>true</reuseForks>
             <!-- Add the required argument for Mockito -->
             <argLine>
               --add-opens com.udacity.catpoint.security/com.udacity.catpoint.security.service=ALL-UNNAMED
