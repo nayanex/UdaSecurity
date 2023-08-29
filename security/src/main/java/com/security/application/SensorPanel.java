@@ -1,6 +1,7 @@
 package com.security.application;
 
 import com.security.data.Sensor;
+import com.security.data.AlarmStatus;
 import com.security.data.SensorType;
 import com.security.service.SecurityService;
 import com.security.service.StyleService;
@@ -12,7 +13,7 @@ import javax.swing.*;
  * Panel that allows users to add sensors to their system. Sensors may be
  * manually set to "active" and "inactive" to test the system.
  */
-public class SensorPanel extends JPanel {
+public class SensorPanel extends JPanel implements StatusListener{
 
     private SecurityService securityService;
 
@@ -45,6 +46,8 @@ public class SensorPanel extends JPanel {
         add(panelLabel, "wrap");
         add(newSensorPanel, "span");
         add(sensorListPanel, "span");
+        // Register this instance as a listener with the SecurityService
+        securityService.addStatusListener(this);
     }
 
     /**
@@ -116,5 +119,20 @@ public class SensorPanel extends JPanel {
     private void removeSensor(Sensor sensor) {
         securityService.removeSensor(sensor);
         updateSensorList(sensorListPanel);
+    }
+
+    @Override
+    public void notify(AlarmStatus status) {
+        // Handle alarm status changes if needed
+    }
+
+    @Override
+    public void catDetected(boolean catDetected) {
+        // Handle cat detection if needed
+    }
+
+    @Override
+    public void sensorStatusChanged() {
+        updateSensorList(sensorListPanel); // Update the sensor list when sensor statuses change
     }
 }
