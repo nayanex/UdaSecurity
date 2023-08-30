@@ -12,9 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SecurityService {
-    private ImageService imageService;
-    private SecurityRepository securityRepository;
-    private Set<StatusListener> statusListeners = new HashSet<>();
+    private final ImageService imageService;
+    private final SecurityRepository securityRepository;
+    private final Set<StatusListener> statusListeners = new HashSet<>();
 
     public SecurityService(SecurityRepository securityRepository, ImageService imageService) {
         this.securityRepository = securityRepository;
@@ -34,7 +34,7 @@ public class SecurityService {
     private void catDetected(Boolean cat) {
         if (cat && getArmingStatus() == ArmingStatus.ARMED_HOME) {
             setAlarmStatus(AlarmStatus.ALARM);
-        } else if (!cat && !anySensorsActive()) {
+        } else if (!cat && anySensorsActive()) {
             setAlarmStatus(AlarmStatus.NO_ALARM); // If the camera image does not contain a cat, change the status to no alarm as long as the sensors are not active
         }
     }
@@ -43,12 +43,8 @@ public class SecurityService {
         statusListeners.add(statusListener);
     }
 
-    public void removeStatusListener(StatusListener statusListener) {
-        statusListeners.remove(statusListener);
-    }
-
     public void setAlarmStatus(AlarmStatus status) {
-        if (status == AlarmStatus.PENDING_ALARM && !anySensorsActive()) {
+        if (status == AlarmStatus.PENDING_ALARM && anySensorsActive()) {
             status = AlarmStatus.NO_ALARM;
         }
         final AlarmStatus finalStatus = status;
@@ -98,7 +94,7 @@ public class SecurityService {
     }
 
     private boolean anySensorsActive() {
-        return securityRepository.getSensors().stream().anyMatch(Sensor::getActive);
+        return securityRepository.getSensors().stream().noneMatch(Sensor::getActive);
     }
 
     private void resetSensorsInactive() {

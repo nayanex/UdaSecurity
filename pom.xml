@@ -61,7 +61,7 @@
             <reuseForks>true</reuseForks>
             <!-- Add the required argument for Mockito -->
             <argLine>
-              --add-opens com.udacity.catpoint.security/com.udacity.catpoint.security.service=ALL-UNNAMED
+              --add-opens com.security/com.security.service=ALL-UNNAMED
             </argLine>
           </configuration>
         </plugin>

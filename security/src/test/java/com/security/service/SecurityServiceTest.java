@@ -1,6 +1,7 @@
 package com.security.service;
 
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import com.security.application.StatusListener;
@@ -24,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class SecurityServiceTest {
-
     @Mock
     private SecurityRepository securityRepository;
 
@@ -363,5 +363,94 @@ class SecurityServiceTest {
         } else {
             verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
         }
+    }
+
+    @Test
+    void GetSensorsReturnsCorrectSet() {
+        // Given
+        Set<Sensor> expectedSensors = new HashSet<>();
+        Sensor sensor1 = new Sensor("Sensor1", SensorType.DOOR);
+        Sensor sensor2 = new Sensor("Sensor2", SensorType.WINDOW);
+        expectedSensors.add(sensor1);
+        expectedSensors.add(sensor2);
+
+        // Set up repository to return the expected set of sensors
+        when(securityRepository.getSensors()).thenReturn(expectedSensors);
+
+        // When
+        Set<Sensor> actualSensors = securityService.getSensors();
+
+        // Then
+        assertEquals(expectedSensors.size(), actualSensors.size(), "Number of sensors should match");
+        assertTrue(actualSensors.contains(sensor1), "Sensor1 should be present");
+        assertTrue(actualSensors.contains(sensor2), "Sensor2 should be present");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "ARMED_HOME, PENDING_ALARM, false, ALARM",
+            "ARMED_HOME, NO_ALARM, true, NO_ALARM"
+    })
+    void TestHandleSensorActivationStatus(ArmingStatus armingStatus, AlarmStatus alarmStatus, boolean isActive, AlarmStatus expected) {
+        // Given
+        when(securityService.getArmingStatus()).thenReturn(armingStatus);
+        when(securityService.getAlarmStatus()).thenReturn(alarmStatus);
+        Sensor mockSensor = mock(Sensor.class);
+
+        // When
+        securityService.changeSensorActivationStatus(mockSensor, isActive);
+
+        // Then
+        if (expected == null) {
+            verify(securityRepository, never()).setAlarmStatus(any(AlarmStatus.class));
+        } else {
+            verify(securityRepository).setAlarmStatus(expected);
+        }
+    }
+
+    /**
+     * Test for verifying that if a sensor is deactivated, and it was previously active,
+     * and the system is in PENDING_ALARM state, the alarm status is changed to NO_ALARM.
+     */
+    @Test
+    void SensorDeactivationChangesAlarmStatusFromPending() {
+        // Given
+        when(securityService.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME); // Set any arming status
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
+
+        // Create mock Sensor object
+        Sensor mockSensor = mock(Sensor.class);
+        when(mockSensor.getActive()).thenReturn(true); // Sensor was active
+
+        // When
+        securityService.changeSensorActivationStatus(mockSensor, false);
+
+        // Then
+        verify(securityRepository).setAlarmStatus(AlarmStatus.NO_ALARM);
+    }
+
+    /**
+     * Test for verifying that if a sensor is activated and the alarm status is PENDING_ALARM,
+     * the alarm status is changed to ALARM.
+     */
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"
+    })
+    void SensorActivationChangesPendingAlarmToAlarm(boolean sensorActive) {
+        // Given
+        when(securityService.getArmingStatus()).thenReturn(ArmingStatus.ARMED_HOME); // Set any arming status
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.PENDING_ALARM);
+
+        // Create mock Sensor object
+        Sensor mockSensor = mock(Sensor.class);
+        when(mockSensor.getActive()).thenReturn(sensorActive);
+
+        // When
+        securityService.changeSensorActivationStatus(mockSensor, true);
+
+        // Then
+        verify(securityRepository).setAlarmStatus(AlarmStatus.ALARM);
     }
 }
