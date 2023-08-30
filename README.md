@@ -137,7 +137,7 @@ Make sure you have completed all the rubric items [here](https://review.udacity.
 You can submit your project by uploading a zip file or selecting your GitHub repo.
 
 ## Maven commands
-
+`mvn compile`
 `mvn -e clean install -U`
 `mvn install site -e`
 `mvn install site -X`
@@ -146,5 +146,4 @@ You can submit your project by uploading a zip file or selecting your GitHub rep
 `mvn help:effective-pom`
 `mvn compile`
 `mvn -e spotbugs:check`
-`rm -rf ~/.m2/repository
-`
+`rm -rf ~/.m2/repository`

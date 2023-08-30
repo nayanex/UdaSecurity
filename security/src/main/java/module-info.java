@@ -1,11 +1,11 @@
-module security {
+module com.security {
     requires java.desktop;
     requires com.google.common;
-    requires com.google.gson;
+    requires transitive com.google.gson;
     requires java.prefs;
     requires miglayout.swing;
     requires miglayout.core;
     requires image;
 
-    opens com.udacity.catpoint.security.data to com.google.gson;
+   opens com.security.data to com.google.gson;
 }
